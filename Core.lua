@@ -6,7 +6,7 @@ local function fetch(url) return game:HttpGet(url) end
 local Library = loadstring(fetch(LINORIA .. "Library.lua"))()
 local SaveManager = loadstring(fetch(LINORIA .. "addons/SaveManager.lua"))()
 
-local VERSION = "v0.6"
+local VERSION = "v0.7"
 local CONFIG_NAME = "autosave"
 
 Library.FontColor = Color3.fromHex("ffffff")
@@ -25,8 +25,6 @@ local Window = Library:CreateWindow({
     Resizable = true,
     ShowCustomCursor = false,
 })
-
-Library.ToggleKeybind = Enum.KeyCode.P
 
 local Vanta = {
     Library = Library,
@@ -51,6 +49,13 @@ function Vanta.FinalizeSettings()
         end,
     })
 
+    MiscBox:AddLabel("Minimize Keybind"):AddKeyPicker("MinimizeKeybind", {
+        Default = "P",
+        NoUI = true,
+        Text = "Minimize Keybind",
+    })
+    Library.ToggleKeybind = Library.Options.MinimizeKeybind
+
     MiscBox:AddLabel("Vanta " .. VERSION)
     MiscBox:AddButton("Unload", function()
         pcall(function() SaveManager:Save(CONFIG_NAME) end)
@@ -59,6 +64,7 @@ function Vanta.FinalizeSettings()
 
     SaveManager:SetLibrary(Library)
     SaveManager:IgnoreThemeSettings()
+    SaveManager:SetIgnoreIndexes({ "MinimizeKeybind" })
     SaveManager:SetFolder("Vanta/" .. tostring(game.PlaceId))
     pcall(function() SaveManager:Load(CONFIG_NAME) end)
 
