@@ -27,10 +27,13 @@ local modulePath = GAME_MODULES[game.PlaceId] or "Games/_Generic.lua"
 local ok, GameModule = pcall(load, modulePath)
 
 if ok and type(GameModule) == "table" and type(GameModule.Init) == "function" then
-    GameModule.Init(Vanta)
+    local initOk, initErr = pcall(GameModule.Init, Vanta)
+    if not initOk then
+        warn("[Vanta] Game module '" .. modulePath .. "' errored: " .. tostring(initErr))
+    end
 else
     warn("[Vanta] Game module '" .. modulePath .. "' failed to load: " .. tostring(GameModule))
 end
 
 Vanta.FinalizeSettings()
-Vanta.Library:Notify("Vanta loaded.", 3)
+Vanta.Library:Notify("Vanta loaded", 3)
