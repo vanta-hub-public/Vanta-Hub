@@ -32,4 +32,5 @@ else
     warn("[Vanta] Game module '" .. modulePath .. "' failed to load: " .. tostring(GameModule))
 end
 
+Vanta.FinalizeSettings()
 Vanta.Library:Notify("Vanta loaded.", 3)
