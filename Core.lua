@@ -6,7 +6,7 @@ local function fetch(url) return game:HttpGet(url) end
 local Library = loadstring(fetch(LINORIA .. "Library.lua"))()
 local SaveManager = loadstring(fetch(LINORIA .. "addons/SaveManager.lua"))()
 
-local VERSION = "v0.4"
+local VERSION = "v0.5"
 local CONFIG_NAME = "autosave"
 
 Library.FontColor = Color3.fromHex("ffffff")
@@ -23,13 +23,14 @@ local Window = Library:CreateWindow({
     Center = true,
     AutoShow = true,
     Resizable = true,
+    ShowCustomCursor = false,
 })
 
 local Vanta = {
     Library = Library,
     Window = Window,
-    Toggles = Toggles,
-    Options = Options,
+    Toggles = Library.Toggles,
+    Options = Library.Options,
     NewTab = function(name)
         return Window:AddTab(name)
     end,
