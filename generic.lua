@@ -1,14 +1,20 @@
---------------------------------------------------------------------
--- Loaded automatically when the current game's PlaceId isn't in
--- Loader.lua's GAME_MODULES table yet.
---------------------------------------------------------------------
 return {
     Init = function(Vanta)
-        local Tab = Vanta.NewTab("Unsupported Game")
-        local Box = Tab:AddLeftGroupbox("Heads up")
+        local Tab = Vanta.NewTab("Main")
+        local Box = Tab:AddLeftGroupbox("Movement")
 
-        Box:AddLabel("No Vanta module exists for this game yet.")
-        Box:AddLabel(("PlaceId: %d"):format(game.PlaceId))
-        Box:AddLabel("Add one under Games/ and register it in Loader.lua.")
+        Box:AddSlider("WalkSpeed", {
+            Text = "Walk Speed",
+            Default = 16,
+            Min = 16,
+            Max = 200,
+            Rounding = 0,
+            Callback = function(value)
+                local char = game.Players.LocalPlayer.Character
+                if char and char:FindFirstChild("Humanoid") then
+                    char.Humanoid.WalkSpeed = value
+                end
+            end,
+        })
     end,
 }
