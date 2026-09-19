@@ -1,25 +1,22 @@
 local LINORIA = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
+local UserInputService = game:GetService("UserInputService")
 
 local function fetch(url) return game:HttpGet(url) end
 
 local Library = loadstring(fetch(LINORIA .. "Library.lua"))()
-local ThemeManager = loadstring(fetch(LINORIA .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(fetch(LINORIA .. "addons/SaveManager.lua"))()
 
 local VERSION = "v0.1"
+local CONFIG_NAME = "autosave"
+
+Library.FontColor = Color3.fromHex("ffffff")
+Library.MainColor = Color3.fromHex("0b0b0b")
+Library.AccentColor = Color3.fromHex("ffffff")
+Library.BackgroundColor = Color3.fromHex("000000")
+Library.OutlineColor = Color3.fromHex("2b2b2b")
 
 Library.ShowCustomCursor = false
-
-ThemeManager.BuiltInThemes["Vanta (Black & White)"] = {
-    1,
-    {
-        FontColor = "ffffff",
-        MainColor = "0b0b0b",
-        AccentColor = "ffffff",
-        BackgroundColor = "000000",
-        OutlineColor = "2b2b2b",
-    },
-}
+UserInputService.MouseIconEnabled = true
 
 local Window = Library:CreateWindow({
     Title = "Vanta",
@@ -29,36 +26,37 @@ local Window = Library:CreateWindow({
 })
 
 local SettingsTab = Window:AddTab("Settings")
-local ThemeBox = SettingsTab:AddLeftGroupbox("Theme")
-local MiscBox = SettingsTab:AddRightGroupbox("Misc")
-
-ThemeManager:SetLibrary(Library)
-ThemeManager:CreateThemeManager(ThemeBox)
-ThemeManager:ApplyTheme("Vanta (Black & White)")
+local MiscBox = SettingsTab:AddLeftGroupbox("Misc")
 
 MiscBox:AddToggle("CustomCursor", {
     Text = "Custom Cursor",
     Default = false,
     Callback = function(value)
         Library.ShowCustomCursor = value
+        UserInputService.MouseIconEnabled = not value
     end,
 })
 
-SaveManager:SetLibrary(Library)
-SaveManager:SetFolder("Vanta/settings")
-SaveManager:IgnoreThemeSettings()
-SaveManager:BuildConfigSection(SettingsTab)
-SaveManager:LoadAutoloadConfig()
-
 MiscBox:AddLabel("Vanta " .. VERSION)
 MiscBox:AddButton("Unload", function()
+    pcall(function() SaveManager:Save(CONFIG_NAME) end)
     Library:Unload()
+end)
+
+SaveManager:SetLibrary(Library)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetFolder("Vanta/" .. tostring(game.PlaceId))
+pcall(function() SaveManager:Load(CONFIG_NAME) end)
+
+task.spawn(function()
+    while task.wait(10) do
+        pcall(function() SaveManager:Save(CONFIG_NAME) end)
+    end
 end)
 
 return {
     Library = Library,
     Window = Window,
-    ThemeManager = ThemeManager,
     SaveManager = SaveManager,
     NewTab = function(name)
         return Window:AddTab(name)
