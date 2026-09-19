@@ -24,11 +24,10 @@ return {
             end
         end
 
-        local Tab = Vanta.NewTab("World 1")
-        local MainGroup = Tab:AddLeftGroupbox("Automations")
-        local FarmGroup = Tab:AddRightGroupbox("Farm Settings")
+        local AllWorldsTab = Vanta.NewTab("All Worlds")
+        local AutomationsGroup = AllWorldsTab:AddLeftGroupbox("Automations")
 
-        MainGroup:AddToggle("AutoTap", {
+        AutomationsGroup:AddToggle("AutoTap", {
             Text = "Auto Tap",
             Default = false,
         })
@@ -44,7 +43,7 @@ return {
             end
         end)
 
-        MainGroup:AddToggle("AutoRebirth", {
+        AutomationsGroup:AddToggle("AutoRebirth", {
             Text = "Auto Rebirth",
             Default = false,
         })
@@ -60,7 +59,10 @@ return {
             end
         end)
 
-        FarmGroup:AddToggle("AutoFarmRebirths", {
+        local World1Tab = Vanta.NewTab("World 1")
+        local World1Farms = World1Tab:AddLeftGroupbox("Farms")
+
+        World1Farms:AddToggle("AutoFarmRebirths", {
             Text = "Auto Farm Rebirths",
             Default = false,
         })
@@ -101,31 +103,29 @@ return {
             end)
         end)
 
-        FarmGroup:AddDivider()
-
-        local checkpointList = {}
+        local world1Checkpoints = {}
         for i = 1, 24 do
-            table.insert(checkpointList, "Checkpoint" .. i)
+            table.insert(world1Checkpoints, "Checkpoint" .. i)
         end
 
-        FarmGroup:AddDropdown("SelectedCheckpoint", {
-            Values = checkpointList,
+        World1Farms:AddDropdown("World1Checkpoint", {
+            Values = world1Checkpoints,
             Default = 1,
             Multi = false,
             Text = "Target Checkpoint",
         })
 
-        FarmGroup:AddToggle("AutoFarmWins", {
+        World1Farms:AddToggle("World1AutoFarmWins", {
             Text = "Auto Farm Wins",
             Default = false,
         })
 
-        Toggles.AutoFarmWins:OnChanged(function()
-            if not Toggles.AutoFarmWins.Value then return end
+        Toggles.World1AutoFarmWins:OnChanged(function()
+            if not Toggles.World1AutoFarmWins.Value then return end
 
             task.spawn(function()
-                while Toggles.AutoFarmWins.Value do
-                    local selectedName = Options.SelectedCheckpoint.Value
+                while Toggles.World1AutoFarmWins.Value do
+                    local selectedName = Options.World1Checkpoint.Value
                     local checkpointsFolder = workspace:FindFirstChild("Checkpoints")
                     local selectedCheckpoint = checkpointsFolder and checkpointsFolder:FindFirstChild(selectedName)
 
@@ -142,10 +142,121 @@ return {
                         if enemiesFolder then
                             repeat
                                 task.wait(0.5)
-                            until #enemiesFolder:GetChildren() == 0 or not Toggles.AutoFarmWins.Value
+                            until #enemiesFolder:GetChildren() == 0 or not Toggles.World1AutoFarmWins.Value
                         end
 
-                        if not Toggles.AutoFarmWins.Value then break end
+                        if not Toggles.World1AutoFarmWins.Value then break end
+
+                        task.wait(1)
+
+                        local winPad = selectedCheckpoint:FindFirstChild("WinPad")
+                        if winPad and LocalPlayer.Character then
+                            local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                            local winPadCFrame = getModelCFrame(winPad)
+                            if humanoid and winPadCFrame then
+                                humanoid:MoveTo(winPadCFrame.Position)
+                                humanoid.MoveToFinished:Wait()
+                            end
+                        end
+                    end
+
+                    task.wait(1)
+                end
+            end)
+        end)
+
+        local World2Tab = Vanta.NewTab("World 2")
+        local World2Farms = World2Tab:AddLeftGroupbox("Farms")
+
+        World2Farms:AddToggle("World2AutoFarmRebirths", {
+            Text = "Auto Farm Rebirths",
+            Default = false,
+        })
+
+        Toggles.World2AutoFarmRebirths:OnChanged(function()
+            local enabled = Toggles.World2AutoFarmRebirths.Value
+            Toggles.AutoTap:SetValue(enabled)
+            Toggles.AutoRebirth:SetValue(enabled)
+
+            if not enabled then return end
+
+            task.spawn(function()
+                while Toggles.World2AutoFarmRebirths.Value do
+                    local char = LocalPlayer.Character
+                    local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+                    if humanoid then
+                        humanoid.Health = 0
+                    end
+
+                    local newChar = LocalPlayer.CharacterAdded:Wait()
+                    local newHumanoid = newChar:WaitForChild("Humanoid")
+
+                    if not Toggles.World2AutoFarmRebirths.Value then break end
+
+                    local toxicBase = workspace:FindFirstChild("World2")
+                        and workspace.World2:FindFirstChild("TrainingAreas")
+                        and workspace.World2.TrainingAreas:FindFirstChild("Toxic")
+                        and workspace.World2.TrainingAreas.Toxic:FindFirstChild("Base")
+
+                    local target = toxicBase and toxicBase:GetChildren()[3]
+
+                    if target then
+                        local targetCFrame = getModelCFrame(target)
+                        if targetCFrame then
+                            newHumanoid:MoveTo(targetCFrame.Position)
+                        end
+                    end
+
+                    task.wait(30)
+                end
+            end)
+        end)
+
+        local world2Checkpoints = {}
+        for i = 25, 39 do
+            table.insert(world2Checkpoints, "Checkpoint" .. i)
+        end
+
+        World2Farms:AddDropdown("World2Checkpoint", {
+            Values = world2Checkpoints,
+            Default = 1,
+            Multi = false,
+            Text = "Target Checkpoint",
+        })
+
+        World2Farms:AddToggle("World2AutoFarmWins", {
+            Text = "Auto Farm Wins",
+            Default = false,
+        })
+
+        Toggles.World2AutoFarmWins:OnChanged(function()
+            if not Toggles.World2AutoFarmWins.Value then return end
+
+            task.spawn(function()
+                while Toggles.World2AutoFarmWins.Value do
+                    local selectedName = Options.World2Checkpoint.Value
+                    local checkpointsFolder = workspace:FindFirstChild("World2")
+                        and workspace.World2:FindFirstChild("Zones")
+                        and workspace.World2.Zones:FindFirstChild("Checkpoints")
+                    local selectedCheckpoint = checkpointsFolder and checkpointsFolder:FindFirstChild(selectedName)
+
+                    if selectedCheckpoint then
+                        local detailModel = selectedCheckpoint:FindFirstChild("Detail")
+                        if detailModel then
+                            local detailCFrame = getModelCFrame(detailModel)
+                            if detailCFrame then
+                                teleportToCFrame(detailCFrame * CFrame.new(0, 10, -30))
+                            end
+                        end
+
+                        local enemiesFolder = workspace:FindFirstChild("Enemies")
+                        if enemiesFolder then
+                            repeat
+                                task.wait(0.5)
+                            until #enemiesFolder:GetChildren() == 0 or not Toggles.World2AutoFarmWins.Value
+                        end
+
+                        if not Toggles.World2AutoFarmWins.Value then break end
 
                         task.wait(1)
 
