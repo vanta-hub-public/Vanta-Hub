@@ -6,7 +6,7 @@ local function fetch(url) return game:HttpGet(url) end
 local Library = loadstring(fetch(LINORIA .. "Library.lua"))()
 local SaveManager = loadstring(fetch(LINORIA .. "addons/SaveManager.lua"))()
 
-local VERSION = "v0.5"
+local VERSION = "v0.6"
 local CONFIG_NAME = "autosave"
 
 Library.FontColor = Color3.fromHex("ffffff")
@@ -25,6 +25,8 @@ local Window = Library:CreateWindow({
     Resizable = true,
     ShowCustomCursor = false,
 })
+
+Library.ToggleKeybind = Enum.KeyCode.P
 
 local Vanta = {
     Library = Library,
