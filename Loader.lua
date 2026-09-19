@@ -1,16 +1,5 @@
---------------------------------------------------------------------
--- VANTA — LOADER
--- This is the ONLY script you execute. Everything else is fetched
--- over HTTP at runtime, so every user always gets the latest build
--- without re-downloading or re-pasting anything.
---------------------------------------------------------------------
+local REPO = "https://raw.githubusercontent.com/vanta-hub-public/Vanta-Hub/main/"
 
--- 1) Where your files are hosted. See README.md for the two options
---    (raw.githubusercontent.com vs jsDelivr) and pick one.
-local REPO = "https://raw.githubusercontent.com/YOUR-USERNAME/Vanta/main/"
-
--- 2) Small fetch/compile helpers so one bad request gives you a real
---    error instead of a silent crash.
 local function fetch(path)
     local ok, result = pcall(game.HttpGet, game, REPO .. path .. "?t=" .. tostring(os.time()))
     if not ok then
@@ -28,14 +17,10 @@ local function load(path, ...)
     return fn(...)
 end
 
--- 3) Boot the shared framework: LinoriaLib, theme, window, Home/Settings tabs.
 local Vanta = load("Core.lua")
 
--- 4) Route to the right game module by PlaceId. Add one line per game
---    you support; everything else falls back to Games/_Generic.lua.
 local GAME_MODULES = {
-    -- [920587237] = "Games/ExampleGame.lua",   -- replace with real PlaceIds
-    -- [271000000] = "Games/AnotherGame.lua",
+    [103138601755519] = "Games/DinoEvolution.lua",
 }
 
 local modulePath = GAME_MODULES[game.PlaceId] or "Games/_Generic.lua"
