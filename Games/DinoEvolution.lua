@@ -1,6 +1,8 @@
 return {
     Init = function(Vanta)
         local Library = Vanta.Library
+        local Toggles = Vanta.Toggles
+        local Options = Vanta.Options
         local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local LocalPlayer = Players.LocalPlayer
@@ -22,14 +24,13 @@ return {
             end
         end
 
-        local Tab = Vanta.NewTab("+1 Dino Evolution")
+        local Tab = Vanta.NewTab("World 1")
         local MainGroup = Tab:AddLeftGroupbox("Automations")
         local FarmGroup = Tab:AddRightGroupbox("Farm Settings")
 
         MainGroup:AddToggle("AutoTap", {
             Text = "Auto Tap",
             Default = false,
-            Tooltip = "Repeatedly fires the tap remote",
         })
 
         Toggles.AutoTap:OnChanged(function()
@@ -46,7 +47,6 @@ return {
         MainGroup:AddToggle("AutoRebirth", {
             Text = "Auto Rebirth",
             Default = false,
-            Tooltip = "Triggers rebirth every 1 second",
         })
 
         Toggles.AutoRebirth:OnChanged(function()
@@ -63,7 +63,6 @@ return {
         FarmGroup:AddToggle("AutoFarmRebirths", {
             Text = "Auto Farm Rebirths",
             Default = false,
-            Tooltip = "Runs Auto Tap/Rebirth, resets character, walks to Angel Base every 30s",
         })
 
         Toggles.AutoFarmRebirths:OnChanged(function()
@@ -119,7 +118,6 @@ return {
         FarmGroup:AddToggle("AutoFarmWins", {
             Text = "Auto Farm Wins",
             Default = false,
-            Tooltip = "Teleports above/behind checkpoint, waits for enemies to clear, walks to WinPad",
         })
 
         Toggles.AutoFarmWins:OnChanged(function()
