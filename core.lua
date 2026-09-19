@@ -6,6 +6,10 @@ local Library = loadstring(fetch(LINORIA .. "Library.lua"))()
 local ThemeManager = loadstring(fetch(LINORIA .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(fetch(LINORIA .. "addons/SaveManager.lua"))()
 
+local VERSION = "v0.1"
+
+Library.ShowCustomCursor = false
+
 ThemeManager.BuiltInThemes["Vanta (Black & White)"] = {
     1,
     {
@@ -24,24 +28,32 @@ local Window = Library:CreateWindow({
     Resizable = true,
 })
 
-local HomeTab = Window:AddTab("Home")
-local HomeBox = HomeTab:AddLeftGroupbox("Vanta")
-HomeBox:AddButton("Unload", function()
-    Library:Unload()
-end)
-
 local SettingsTab = Window:AddTab("Settings")
 local ThemeBox = SettingsTab:AddLeftGroupbox("Theme")
+local MiscBox = SettingsTab:AddRightGroupbox("Misc")
 
 ThemeManager:SetLibrary(Library)
 ThemeManager:CreateThemeManager(ThemeBox)
 ThemeManager:ApplyTheme("Vanta (Black & White)")
+
+MiscBox:AddToggle("CustomCursor", {
+    Text = "Custom Cursor",
+    Default = false,
+    Callback = function(value)
+        Library.ShowCustomCursor = value
+    end,
+})
 
 SaveManager:SetLibrary(Library)
 SaveManager:SetFolder("Vanta/settings")
 SaveManager:IgnoreThemeSettings()
 SaveManager:BuildConfigSection(SettingsTab)
 SaveManager:LoadAutoloadConfig()
+
+MiscBox:AddLabel("Vanta " .. VERSION)
+MiscBox:AddButton("Unload", function()
+    Library:Unload()
+end)
 
 return {
     Library = Library,
