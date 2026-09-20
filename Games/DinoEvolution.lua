@@ -24,6 +24,73 @@ return {
             end
         end
 
+        local function safePath(...)
+            local current = workspace
+            for _, name in ipairs({...}) do
+                if not current then return nil end
+                current = current:FindFirstChild(name)
+            end
+            return current
+        end
+
+        local World1Treadmills = {
+            Basic = function()
+                local base = safePath("TrainingArea", "Basic", "Base")
+                return base and base:FindFirstChild("Part")
+            end,
+            Skeleton = function()
+                local base = safePath("TrainingArea", "Sekeleton", "Base")
+                return base and base:FindFirstChild("Part")
+            end,
+            Gold = function()
+                local base = safePath("TrainingArea", "Gold", "Base")
+                return base and base:GetChildren()[5]
+            end,
+            Diamond = function()
+                local base = safePath("TrainingArea", "Diamond", "Base")
+                return base and base:GetChildren()[5]
+            end,
+            Magma = function()
+                local base = safePath("TrainingArea", "Magma", "Base")
+                return base and base:GetChildren()[2]
+            end,
+            Toxic = function()
+                local base = safePath("TrainingArea", "Toxic", "Base")
+                return base and base:GetChildren()[7]
+            end,
+            Angel = function()
+                local base = safePath("TrainingArea", "Angel", "Base")
+                return base and base:FindFirstChild("Part")
+            end,
+        }
+
+        local World2Treadmills = {
+            Base = function()
+                local base = safePath("World2", "TrainingAreas", "Basic", "Base")
+                return base and base:GetChildren()[3]
+            end,
+            Skeleton = function()
+                local base = safePath("World2", "TrainingAreas", "Sekeleton", "Base")
+                return base and base:GetChildren()[2]
+            end,
+            Gold = function()
+                local base = safePath("World2", "TrainingAreas", "Gold", "Base")
+                return base and base:GetChildren()[4]
+            end,
+            Diamond = function()
+                local base = safePath("World2", "TrainingAreas", "Diamond", "Base")
+                return base and base:GetChildren()[2]
+            end,
+            Magma = function()
+                local base = safePath("World2", "TrainingAreas", "Magma", "Base")
+                return base and base:GetChildren()[8]
+            end,
+            Toxic = function()
+                local base = safePath("World2", "TrainingAreas", "Toxic", "Base")
+                return base and base:GetChildren()[4]
+            end,
+        }
+
         local AllWorldsTab = Vanta.NewTab("All Worlds")
         local AutomationsGroup = AllWorldsTab:AddLeftGroupbox("Automations")
 
@@ -62,6 +129,13 @@ return {
         local World1Tab = Vanta.NewTab("World 1")
         local World1Farms = World1Tab:AddLeftGroupbox("Farms")
 
+        World1Farms:AddDropdown("World1Treadmill", {
+            Values = { "Basic", "Skeleton", "Gold", "Diamond", "Magma", "Toxic", "Angel" },
+            Default = 1,
+            Multi = false,
+            Text = "Target Treadmill",
+        })
+
         World1Farms:AddToggle("AutoFarmRebirths", {
             Text = "Auto Farm Rebirths",
             Default = false,
@@ -87,12 +161,11 @@ return {
 
                     if not Toggles.AutoFarmRebirths.Value then break end
 
-                    local angelBase = workspace:FindFirstChild("TrainingArea")
-                        and workspace.TrainingArea:FindFirstChild("Angel")
-                        and workspace.TrainingArea.Angel:FindFirstChild("Base")
+                    local getTarget = World1Treadmills[Options.World1Treadmill.Value]
+                    local target = getTarget and getTarget()
 
-                    if angelBase then
-                        local targetCFrame = getModelCFrame(angelBase)
+                    if target then
+                        local targetCFrame = getModelCFrame(target)
                         if targetCFrame then
                             newHumanoid:MoveTo(targetCFrame.Position)
                         end
@@ -168,6 +241,13 @@ return {
         local World2Tab = Vanta.NewTab("World 2")
         local World2Farms = World2Tab:AddLeftGroupbox("Farms")
 
+        World2Farms:AddDropdown("World2Treadmill", {
+            Values = { "Base", "Skeleton", "Gold", "Diamond", "Magma", "Toxic" },
+            Default = 1,
+            Multi = false,
+            Text = "Target Treadmill",
+        })
+
         World2Farms:AddToggle("World2AutoFarmRebirths", {
             Text = "Auto Farm Rebirths",
             Default = false,
@@ -193,12 +273,8 @@ return {
 
                     if not Toggles.World2AutoFarmRebirths.Value then break end
 
-                    local toxicBase = workspace:FindFirstChild("World2")
-                        and workspace.World2:FindFirstChild("TrainingAreas")
-                        and workspace.World2.TrainingAreas:FindFirstChild("Toxic")
-                        and workspace.World2.TrainingAreas.Toxic:FindFirstChild("Base")
-
-                    local target = toxicBase and toxicBase:GetChildren()[3]
+                    local getTarget = World2Treadmills[Options.World2Treadmill.Value]
+                    local target = getTarget and getTarget()
 
                     if target then
                         local targetCFrame = getModelCFrame(target)
