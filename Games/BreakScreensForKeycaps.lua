@@ -14,6 +14,13 @@ return {
             return current
         end
 
+        local function getCFrame(obj)
+            if not obj then return nil end
+            if obj:IsA("BasePart") then return obj.CFrame end
+            if obj.PrimaryPart then return obj.PrimaryPart.CFrame end
+            return obj:GetPivot()
+        end
+
         local function getPos(obj)
             if not obj then return nil end
             if obj:IsA("BasePart") then return obj.Position end
@@ -69,11 +76,21 @@ return {
                     local humanoid = char and char:FindFirstChildOfClass("Humanoid")
 
                     if hrp and humanoid then
-                        local screen = safePath("Lobby", "Main", "Screen", "Screen", "Screen38")
-                        if screen and screen:IsA("BasePart") then
-                            hrp.CFrame = screen.CFrame
-                            task.wait(0.2)
-                            hrp.CFrame = screen.CFrame * CFrame.new(0, 0, -25)
+                        local screenFolder = safePath("Lobby", "Main", "Screen", "Screen")
+                        if screenFolder then
+                            for i = 1, 38 do
+                                if not Toggles.AutoFarm.Value then break end
+                                local screenCFrame = getCFrame(screenFolder:FindFirstChild("Screen" .. i))
+                                if screenCFrame then
+                                    hrp.CFrame = screenCFrame
+                                end
+                                task.wait(0.25)
+                            end
+
+                            local lastCFrame = getCFrame(screenFolder:FindFirstChild("Screen38"))
+                            if lastCFrame then
+                                hrp.CFrame = lastCFrame * CFrame.new(0, 0, -25)
+                            end
                         end
 
                         local keycapsFolder = workspace:FindFirstChild("KeycapPickups")
