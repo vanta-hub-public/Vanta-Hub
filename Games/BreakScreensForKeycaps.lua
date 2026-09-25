@@ -89,7 +89,7 @@ return {
 
                             local lastCFrame = getCFrame(screenFolder:FindFirstChild("Screen38"))
                             if lastCFrame then
-                                hrp.CFrame = lastCFrame * CFrame.new(0, 0, -25)
+                                hrp.CFrame = lastCFrame * CFrame.new(50, 0, 0)
                             end
                         end
 
