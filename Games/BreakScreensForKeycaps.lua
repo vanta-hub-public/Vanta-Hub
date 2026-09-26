@@ -3,6 +3,7 @@ return {
         local Library = Vanta.Library
         local Toggles = Vanta.Toggles
         local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
         local LocalPlayer = Players.LocalPlayer
 
         local function safePath(...)
@@ -58,6 +59,27 @@ return {
             humanoid.MoveToFinished:Wait()
         end
 
+        local function walkToNoclip(character, humanoid, hrp, targetPos)
+            local connection
+            connection = RunService.Stepped:Connect(function()
+                for _, part in ipairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end)
+
+            humanoid:MoveTo(targetPos)
+            humanoid.MoveToFinished:Wait()
+
+            connection:Disconnect()
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+
         local MainTab = Vanta.NewTab("Main")
         local FarmGroup = MainTab:AddLeftGroupbox("Farm")
 
@@ -89,7 +111,12 @@ return {
 
                             local lastCFrame = getCFrame(screenFolder:FindFirstChild("Screen38"))
                             if lastCFrame then
-                                hrp.CFrame = lastCFrame * CFrame.new(-50, 0, 0)
+                                hrp.CFrame = lastCFrame
+                            end
+
+                            local secretPos = getPos(safePath("Regions", "Secret"))
+                            if secretPos then
+                                walkToNoclip(char, humanoid, hrp, secretPos)
                             end
                         end
 
