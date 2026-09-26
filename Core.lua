@@ -6,7 +6,7 @@ local function fetch(url) return game:HttpGet(url) end
 local Library = loadstring(fetch(LINORIA .. "Library.lua"))()
 local SaveManager = loadstring(fetch(LINORIA .. "addons/SaveManager.lua"))()
 
-local VERSION = "v1.1"
+local VERSION = "v1.2"
 local CONFIG_NAME = "autosave"
 
 Library.FontColor = Color3.fromHex("ffffff")
