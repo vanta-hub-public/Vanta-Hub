@@ -21,6 +21,7 @@ local Vanta = load("Core.lua")
 
 local GAME_MODULES = {
     [103138601755519] = "Games/DinoEvolution.lua",
+    [107778070777162] = "Games/StealAnEgg.lua",
 }
 
 local modulePath = GAME_MODULES[game.PlaceId] or "Games/_Generic.lua"
