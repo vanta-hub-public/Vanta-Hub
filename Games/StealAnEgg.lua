@@ -130,6 +130,10 @@ return {
                         local nearestSlot = findNearest(slotsFolder, hrp.Position)
                         walkTo(humanoid, nearestSlot)
 
+                        hrp.Anchored = true
+                        task.wait(0.7)
+                        hrp.Anchored = false
+
                         local prompt = nearestSlot and nearestSlot:FindFirstChildWhichIsA("ProximityPrompt", true)
                         if prompt then
                             pcall(function()
