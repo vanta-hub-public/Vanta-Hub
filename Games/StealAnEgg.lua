@@ -136,12 +136,18 @@ return {
 
                         local prompt = nearestSlot and nearestSlot:FindFirstChildWhichIsA("ProximityPrompt", true)
                         if prompt then
-                            pcall(function()
-                                local vim = game:GetService("VirtualInputManager")
-                                vim:SendKeyEvent(true, Enum.KeyCode.E, false, game)
-                                task.wait(0.2)
-                                vim:SendKeyEvent(false, Enum.KeyCode.E, false, game)
-                            end)
+                            if fireproximityprompt then
+                                pcall(function()
+                                    fireproximityprompt(prompt)
+                                end)
+                            else
+                                pcall(function()
+                                    local vim = game:GetService("VirtualInputManager")
+                                    vim:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+                                    task.wait(0.2)
+                                    vim:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+                                end)
+                            end
                         end
 
                         local basesFolder = safePath("World", "Build", "MainMap", "Bases")
